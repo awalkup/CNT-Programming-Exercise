@@ -80,7 +80,12 @@ public class Graph {
     }
 
     public List<Vertex> findLongestPath(Integer sourceVertexId) {
-        List<Vertex> longestPath = findLongestPathHelper(vertices.get(sourceVertexId), new HashMap<>());
+        Vertex sourceVertex = vertices.get(sourceVertexId);
+        if (sourceVertex == null) {
+            throw new IllegalArgumentException("Source vertex " + sourceVertexId + " does not exist in the graph.");
+        }
+
+        List<Vertex> longestPath = findLongestPathHelper(sourceVertex, new HashMap<>());
         Collections.reverse(longestPath);
         return longestPath;
     }
@@ -100,6 +105,6 @@ public class Graph {
         currentLongestPath.add(currentVertex);
 
         longestPathMap.put(currentVertex.getId(), currentLongestPath);
-        return currentLongestPath;
+        return new ArrayList<>(currentLongestPath);
     }
 }

@@ -164,7 +164,7 @@ public class GraphTest {
         graph.addEdge(2, 0);
 
         graph.getTopologicalSorting();
-        fail("Expected an exception because the graph is not acyclic.");
+        fail("Expected IllegalStateException because the graph is not acyclic.");
     }
 
     @Test
@@ -191,6 +191,190 @@ public class GraphTest {
         graph.addEdge(4, 5);
 
         List<Vertex> longestPath = graph.findLongestPath(0);
+        assertThat(longestPath.size(), is(6));
+        assertThat(longestPath.get(0).getId(), is(0));
+        assertThat(longestPath.get(1).getId(), is(3));
+        assertThat(longestPath.get(2).getId(), is(1));
+        assertThat(longestPath.get(3).getId(), is(2));
+        assertThat(longestPath.get(4).getId(), is(4));
+        assertThat(longestPath.get(5).getId(), is(5));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testFindLongestPath_NoVertices() {
+        Graph graph = new Graph();
+
+        graph.findLongestPath(0);
+        fail("Expected IllegalArgumentException");
+    }
+
+    @Test
+    public void testFindLongestPath_DisjointGraph() {
+        Graph graph = new Graph();
+        graph.addVertex(new Vertex(0));
+        graph.addVertex(new Vertex(1));
+        graph.addVertex(new Vertex(2));
+        graph.addVertex(new Vertex(3));
+        graph.addVertex(new Vertex(4));
+
+        graph.addEdge(0, 1);
+        graph.addEdge(0, 2);
+
+        graph.addEdge(1, 2);
+
+        graph.addEdge(4, 3);
+
+        List<Vertex> longestPath = graph.findLongestPath(0);
+        assertThat(longestPath.size(), is(3));
+        assertThat(longestPath.get(0).getId(), is(0));
+        assertThat(longestPath.get(1).getId(), is(1));
+        assertThat(longestPath.get(2).getId(), is(2));
+    }
+
+    @Test
+    public void testFindLongestPath_NoEdges() {
+        Graph graph = new Graph();
+        graph.addVertex(new Vertex(0));
+        graph.addVertex(new Vertex(1));
+        graph.addVertex(new Vertex(2));
+
+        List<Vertex> longestPath = graph.findLongestPath(2);
+        assertThat(longestPath.size(), is(1));
+        assertThat(longestPath.get(0).getId(), is(2));
+    }
+
+    @Test
+    public void testFindLongestPath_Complex() {
+        Graph graph = new Graph();
+        graph.addVertex(new Vertex(1));
+        graph.addVertex(new Vertex(2));
+        graph.addVertex(new Vertex(3));
+        graph.addVertex(new Vertex(4));
+        graph.addVertex(new Vertex(5));
+        graph.addVertex(new Vertex(6));
+        graph.addVertex(new Vertex(7));
+        graph.addVertex(new Vertex(8));
+        graph.addVertex(new Vertex(9));
+        graph.addVertex(new Vertex(10));
+        graph.addVertex(new Vertex(11));
+        graph.addVertex(new Vertex(12));
+        graph.addVertex(new Vertex(13));
+        graph.addVertex(new Vertex(14));
+        graph.addVertex(new Vertex(15));
+
+        graph.addEdge(1, 2);
+        graph.addEdge(1, 3);
+        graph.addEdge(1, 4);
+        graph.addEdge(1, 5);
+        graph.addEdge(1, 6);
+        graph.addEdge(1, 8);
+        graph.addEdge(1, 9);
+        graph.addEdge(1, 10);
+        graph.addEdge(1, 12);
+        graph.addEdge(1, 13);
+        graph.addEdge(1, 14);
+        graph.addEdge(1, 15);
+
+        graph.addEdge(2, 4);
+        graph.addEdge(2, 5);
+        graph.addEdge(2, 6);
+        graph.addEdge(2, 7);
+
+        graph.addEdge(3, 4);
+        graph.addEdge(3, 7);
+        graph.addEdge(3, 9);
+
+        graph.addEdge(5, 7);
+        graph.addEdge(5, 9);
+
+        graph.addEdge(8, 9);
+        graph.addEdge(8, 10);
+        graph.addEdge(8, 11);
+
+        graph.addEdge(9, 10);
+        graph.addEdge(9, 11);
+        graph.addEdge(9, 12);
+        graph.addEdge(9, 13);
+
+        graph.addEdge(10, 12);
+
+        graph.addEdge(11, 13);
+        graph.addEdge(11, 14);
+        graph.addEdge(11, 15);
+
+        System.out.println(graph);
+
+        List<Vertex> longestPath = graph.findLongestPath(1);
         System.out.println(longestPath);
+        assertThat(longestPath.size(), is(6));
+        assertThat(longestPath.get(0).getId(), is(1));
+        assertThat(longestPath.get(1).getId(), is(2));
+        assertThat(longestPath.get(2).getId(), is(5));
+        assertThat(longestPath.get(3).getId(), is(9));
+        assertThat(longestPath.get(4).getId(), is(10));
+        assertThat(longestPath.get(5).getId(), is(12));
+    }
+
+    @Test
+    public void testFindLongestPath_Complex2() {
+        Graph graph = new Graph();
+        graph.addVertex(new Vertex(0));
+        graph.addVertex(new Vertex(1));
+        graph.addVertex(new Vertex(2));
+        graph.addVertex(new Vertex(3));
+        graph.addVertex(new Vertex(4));
+        graph.addVertex(new Vertex(5));
+        graph.addVertex(new Vertex(6));
+        graph.addVertex(new Vertex(7));
+        graph.addVertex(new Vertex(8));
+        graph.addVertex(new Vertex(9));
+        graph.addVertex(new Vertex(10));
+        graph.addVertex(new Vertex(11));
+        graph.addVertex(new Vertex(12));
+        graph.addVertex(new Vertex(13));
+
+        graph.addEdge(0, 4);
+        graph.addEdge(0, 5);
+        graph.addEdge(0, 11);
+
+        graph.addEdge(1, 2);
+        graph.addEdge(1, 4);
+        graph.addEdge(1, 8);
+
+        graph.addEdge(2, 5);
+        graph.addEdge(2, 6);
+        graph.addEdge(2, 9);
+
+        graph.addEdge(3, 6);
+        graph.addEdge(3, 13);
+
+        graph.addEdge(4, 7);
+
+        graph.addEdge(5, 8);
+        graph.addEdge(5, 12);
+
+        graph.addEdge(6, 5);
+
+        graph.addEdge(8, 7);
+
+        graph.addEdge(9, 10);
+        graph.addEdge(9, 11);
+
+        graph.addEdge(10, 13);
+
+        graph.addEdge(12, 9);
+
+        System.out.println(graph);
+
+        List<Vertex> longestPath = graph.findLongestPath(2);
+        System.out.println(longestPath);
+        assertThat(longestPath.size(), is(7));
+        assertThat(longestPath.get(0).getId(), is(2));
+        assertThat(longestPath.get(1).getId(), is(6));
+        assertThat(longestPath.get(2).getId(), is(5));
+        assertThat(longestPath.get(3).getId(), is(12));
+        assertThat(longestPath.get(4).getId(), is(9));
+        assertThat(longestPath.get(5).getId(), is(10));
+        assertThat(longestPath.get(6).getId(), is(13));
     }
 }
