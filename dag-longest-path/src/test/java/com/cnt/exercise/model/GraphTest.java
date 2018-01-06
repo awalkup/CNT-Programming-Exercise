@@ -5,11 +5,12 @@ import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 public class GraphTest {
 
     @Test
-    public void testAddEdge() throws Exception {
+    public void testAddEdge() {
         Graph graph = new Graph();
         graph.addVertex(new Vertex(0));
         graph.addVertex(new Vertex(1));
@@ -27,7 +28,7 @@ public class GraphTest {
     }
 
     @Test
-    public void testAddEdge_Disjoint() throws Exception {
+    public void testAddEdge_Disjoint() {
         Graph graph = new Graph();
         graph.addVertex(new Vertex(0));
         graph.addVertex(new Vertex(1));
@@ -38,7 +39,7 @@ public class GraphTest {
     }
 
     @Test
-    public void testAddEdge_Complex() throws Exception {
+    public void testAddEdge_Complex() {
         // Almost certainly not acyclic
         Graph graph = new Graph();
         graph.addVertex(new Vertex(0));
@@ -87,7 +88,7 @@ public class GraphTest {
     }
 
     @Test
-    public void testTopologicalSort() throws Exception {
+    public void testTopologicalSort() {
         Graph graph = new Graph();
         graph.addVertex(new Vertex(0));
         graph.addVertex(new Vertex(1));
@@ -116,7 +117,7 @@ public class GraphTest {
     }
 
     @Test
-    public void testTopologicalSort_Complex() throws Exception {
+    public void testTopologicalSort_Complex() {
         Graph graph = new Graph();
         graph.addVertex(new Vertex(2));
         graph.addVertex(new Vertex(3));
@@ -149,5 +150,47 @@ public class GraphTest {
         assertThat(sortedVertices.get(5), is(8));
         assertThat(sortedVertices.get(6), is(9));
         assertThat(sortedVertices.get(7), is(2));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testTopologicalSort_CyclicGraph() {
+        Graph graph = new Graph();
+        graph.addVertex(new Vertex(0));
+        graph.addVertex(new Vertex(1));
+        graph.addVertex(new Vertex(2));
+
+        graph.addEdge(0, 1);
+        graph.addEdge(1, 2);
+        graph.addEdge(2, 0);
+
+        graph.getTopologicalSorting();
+        fail("Expected an exception because the graph is not acyclic.");
+    }
+
+    @Test
+    public void testFindLongestPath() {
+        Graph graph = new Graph();
+        graph.addVertex(new Vertex(0));
+        graph.addVertex(new Vertex(1));
+        graph.addVertex(new Vertex(2));
+        graph.addVertex(new Vertex(3));
+        graph.addVertex(new Vertex(4));
+        graph.addVertex(new Vertex(5));
+
+        graph.addEdge(0, 1);
+        graph.addEdge(0, 3);
+
+        graph.addEdge(1, 2);
+
+        graph.addEdge(2, 4);
+        graph.addEdge(2, 5);
+
+        graph.addEdge(3, 1);
+        graph.addEdge(3, 4);
+
+        graph.addEdge(4, 5);
+
+        List<Vertex> longestPath = graph.findLongestPath(0);
+        System.out.println(longestPath);
     }
 }
